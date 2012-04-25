@@ -1,0 +1,27 @@
+<idea-plugin version="2">
+    <id>com.thoughtworks.idea.puppet</id>
+    <name>Puppet plugin</name>
+    <description>Syntax highlighting and code navigation for Puppet</description>
+    <version>0.1</version>
+    <vendor>ThoughtWorks</vendor>
+    <idea-version since-build="8000"/>
+    <depends>com.intellij.modules.lang</depends>
+    <application-components>
+        <!-- Add your application components here -->
+    </application-components>
+
+    <project-components>
+        <!-- Add your project components here -->
+    </project-components>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
+        <fileTypeFactory implementation="com.thoughtworks.idea.puppet.PuppetFileTypeFactory"/>
+        <lang.parserDefinition language="Puppet" implementationClass="com.thoughtworks.idea.puppet.parsing.PuppetParserDefinition"/>
+        <lang.commenter language="Puppet" implementationClass="com.thoughtworks.idea.puppet.PuppetCommenter"/>
+    </extensions>
+</idea-plugin>

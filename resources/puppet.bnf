@@ -1,0 +1,54 @@
+{
+  classHeader="header.txt"
+  parserClass="com.thoughtworks.idea.puppet.parser.PuppetParser"
+  stubParserClass="com.thoughtworks.idea.puppet.parser.PuppetParserUtil"
+
+  implements="com.thoughtworks.idea.puppet.psi.PuppetCompositeElement"
+  extends="com.thoughtworks.idea.puppet.psi.impl.PuppetCompositeElementImpl"
+
+  psiClassPrefix="Puppet"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.thoughtworks.idea.puppet.psi"
+  psiImplPackage="com.thoughtworks.idea.puppet.psi.impl"
+
+  elementTypeHolderClass="com.thoughtworks.idea.puppet.psi.PuppetTypes"
+  elementTypePrefix="PP_"
+  elementTypeClass="com.thoughtworks.idea.puppet.psi.PuppetCompositeElementType"
+  tokenTypeClass="com.thoughtworks.idea.puppet.psi.PuppetTokenType"
+
+  // tokens
+  LEFT_BRACE="{"
+  RIGHT_BRACE="}"
+  OP_PROPERTY="=>"
+  OP_COMMA=","
+
+  implements("node|class|define")="com.thoughtworks.idea.puppet.psi.PuppetNamedElement"
+  extends("node|class|define")="com.thoughtworks.idea.puppet.psi.impl.PuppetNamedElementImpl"
+  mixin("string_literal_expression")="com.thoughtworks.idea.puppet.psi.impl.PuppetStringImpl"
+  mixin("reference_or_token")="com.thoughtworks.idea.puppet.psi.impl.PuppetRefOrTokenImpl"
+
+}
+recipe ::= sequence manifest?
+
+manifest ::= modifier obj_name '{' def_body* '}'
+obj_name ::= reference_or_token
+modifier ::= 'node' | 'class' | 'define' | 'inherits' | 'contained'
+
+def_body ::= inclusion | class_definition //| variable_exp
+
+inclusion ::= 'include' class_name
+
+class_definition ::= modifier class_name '{' instance_name ':' class_body '}'
+class_name ::= reference_or_token
+instance_name ::= string_literal_expression
+
+class_body ::= sequence attribute?
+attribute ::= attr_name '=>' attr_value ','*
+attr_name ::= reference_or_token
+attr_value ::= (reference_or_token | string_literal_expression)
+
+expression ::= sequence choice?
+
+reference_or_token ::= id  {extends="expression" }
+
+string_literal_expression ::= string {extends="expression"}
