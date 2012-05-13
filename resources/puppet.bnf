@@ -32,7 +32,7 @@ recipe ::= sequence manifest?
 
 manifest ::= modifier obj_name '{' def_body* '}'
 obj_name ::= reference_or_token
-modifier ::= 'node' | 'class' | 'define' | 'inherits' | 'contained'
+modifier ::= 'node' | 'class' | 'define' | 'inherits' | 'contained' | virtual
 
 def_body ::= inclusion | class_definition //| variable_exp
 
@@ -45,10 +45,18 @@ instance_name ::= string_literal_expression
 class_body ::= sequence attribute?
 attribute ::= attr_name '=>' attr_value ','*
 attr_name ::= reference_or_token
-attr_value ::= (reference_or_token | string_literal_expression)
+attr_value ::= (reference_or_token | string_literal_expression | dependency | digits | function)
+
+variable ::= "$" reference_or_token
 
 expression ::= sequence choice?
+
+dependency ::= reference_or_token '[' string_literal_expression ']'
 
 reference_or_token ::= id  {extends="expression" }
 
 string_literal_expression ::= string {extends="expression"}
+
+digits ::= digit *
+
+
