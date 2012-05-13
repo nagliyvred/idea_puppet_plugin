@@ -30,9 +30,27 @@ public class PuppetAttrValueImpl extends PuppetCompositeElementImpl implements P
   }
 
   @Override
-  @NotNull
+  @Nullable
+  public PuppetDependency getDependency() {
+    return findChildByClass(PuppetDependency.class);
+  }
+
+  @Override
+  @Nullable
+  public PuppetDigits getDigits() {
+    return findChildByClass(PuppetDigits.class);
+  }
+
+  @Override
+  @Nullable
   public PuppetExpression getExpression() {
-    return findNotNullChildByClass(PuppetExpression.class);
+    return findChildByClass(PuppetExpression.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getFunction() {
+    return findChildByType(PP_FUNCTION);
   }
 
 }

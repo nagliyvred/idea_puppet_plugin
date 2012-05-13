@@ -57,6 +57,12 @@ public class PuppetParser implements PsiParser {
     else if (root_ == PP_DEF_BODY) {
       result_ = def_body(builder_, level_ + 1);
     }
+    else if (root_ == PP_DEPENDENCY) {
+      result_ = dependency(builder_, level_ + 1);
+    }
+    else if (root_ == PP_DIGITS) {
+      result_ = digits(builder_, level_ + 1);
+    }
     else if (root_ == PP_EXPRESSION) {
       result_ = expression(builder_, level_ + 1);
     }
@@ -80,6 +86,9 @@ public class PuppetParser implements PsiParser {
     }
     else if (root_ == PP_STRING_LITERAL_EXPRESSION) {
       result_ = string_literal_expression(builder_, level_ + 1);
+    }
+    else if (root_ == PP_VARIABLE) {
+      result_ = variable(builder_, level_ + 1);
     }
     else {
       Marker marker_ = builder_.mark();
@@ -120,19 +129,22 @@ public class PuppetParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (reference_or_token | string_literal_expression)
+  // (reference_or_token | string_literal_expression | dependency | digits | function)
   public static boolean attr_value(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attr_value")) return false;
     return attr_value_0(builder_, level_ + 1);
   }
 
-  // reference_or_token | string_literal_expression
+  // reference_or_token | string_literal_expression | dependency | digits | function
   private static boolean attr_value_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "attr_value_0")) return false;
     boolean result_ = false;
     final Marker marker_ = builder_.mark();
     result_ = reference_or_token(builder_, level_ + 1);
     if (!result_) result_ = string_literal_expression(builder_, level_ + 1);
+    if (!result_) result_ = dependency(builder_, level_ + 1);
+    if (!result_) result_ = digits(builder_, level_ + 1);
+    if (!result_) result_ = consumeToken(builder_, PP_FUNCTION);
     if (result_) {
       marker_.done(PP_ATTR_VALUE);
     }
@@ -260,6 +272,45 @@ public class PuppetParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // reference_or_token '[' string_literal_expression ']'
+  public static boolean dependency(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "dependency")) return false;
+    if (!nextTokenIs(builder_, PP_ID)) return false;
+    boolean result_ = false;
+    final Marker marker_ = builder_.mark();
+    result_ = reference_or_token(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, "[");
+    result_ = result_ && string_literal_expression(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, "]");
+    if (result_) {
+      marker_.done(PP_DEPENDENCY);
+    }
+    else {
+      marker_.rollbackTo();
+    }
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // digit *
+  public static boolean digits(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "digits")) return false;
+    final Marker marker_ = builder_.mark();
+    int offset_ = builder_.getCurrentOffset();
+    while (true) {
+      if (!consumeToken(builder_, PP_DIGIT)) break;
+      int next_offset_ = builder_.getCurrentOffset();
+      if (offset_ == next_offset_) {
+        empty_element_parsed_guard_(builder_, offset_, "digits");
+        break;
+      }
+      offset_ = next_offset_;
+    }
+    marker_.done(PP_DIGITS);
+    return true;
+  }
+
+  /* ********************************************************** */
   // sequence choice?
   public static boolean expression(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "expression")) return false;
@@ -360,7 +411,7 @@ public class PuppetParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // 'node' | 'class' | 'define' | 'inherits' | 'contained'
+  // 'node' | 'class' | 'define' | 'inherits' | 'contained' | virtual
   public static boolean modifier(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "modifier")) return false;
     boolean result_ = false;
@@ -370,6 +421,7 @@ public class PuppetParser implements PsiParser {
     if (!result_) result_ = consumeToken(builder_, "define");
     if (!result_) result_ = consumeToken(builder_, "inherits");
     if (!result_) result_ = consumeToken(builder_, "contained");
+    if (!result_) result_ = consumeToken(builder_, PP_VIRTUAL);
     if (result_) {
       marker_.done(PP_MODIFIER);
     }
@@ -458,6 +510,23 @@ public class PuppetParser implements PsiParser {
     }
     else if (result_) {
       marker_.done(PP_STRING_LITERAL_EXPRESSION);
+    }
+    else {
+      marker_.rollbackTo();
+    }
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // "$" reference_or_token
+  public static boolean variable(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "variable")) return false;
+    boolean result_ = false;
+    final Marker marker_ = builder_.mark();
+    result_ = consumeToken(builder_, "$");
+    result_ = result_ && reference_or_token(builder_, level_ + 1);
+    if (result_) {
+      marker_.done(PP_VARIABLE);
     }
     else {
       marker_.rollbackTo();

@@ -13,26 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.thoughtworks.idea.puppet.psi.impl;
+package com.thoughtworks.idea.puppet.psi;
 
 import java.util.List;
 import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
-import static com.thoughtworks.idea.puppet.psi.PuppetTypes.*;
-import com.thoughtworks.idea.puppet.psi.*;
 
-public class PuppetModifierImpl extends PuppetCompositeElementImpl implements PuppetModifier {
-
-  public PuppetModifierImpl(ASTNode node) {
-    super(node);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getVirtual() {
-    return findChildByType(PP_VIRTUAL);
-  }
+public interface PuppetDigits extends PuppetCompositeElement {
 
 }

@@ -21,7 +21,16 @@ import com.intellij.psi.PsiElement;
 
 public interface PuppetAttrValue extends PuppetCompositeElement {
 
-  @NotNull
+  @Nullable
+  public PuppetDependency getDependency();
+
+  @Nullable
+  public PuppetDigits getDigits();
+
+  @Nullable
   public PuppetExpression getExpression();
+
+  @Nullable
+  public PsiElement getFunction();
 
 }

@@ -23,16 +23,16 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.thoughtworks.idea.puppet.psi.PuppetTypes.*;
 import com.thoughtworks.idea.puppet.psi.*;
 
-public class PuppetModifierImpl extends PuppetCompositeElementImpl implements PuppetModifier {
+public class PuppetDependencyImpl extends PuppetCompositeElementImpl implements PuppetDependency {
 
-  public PuppetModifierImpl(ASTNode node) {
+  public PuppetDependencyImpl(ASTNode node) {
     super(node);
   }
 
   @Override
-  @Nullable
-  public PsiElement getVirtual() {
-    return findChildByType(PP_VIRTUAL);
+  @NotNull
+  public List<PuppetExpression> getExpressionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, PuppetExpression.class);
   }
 
 }

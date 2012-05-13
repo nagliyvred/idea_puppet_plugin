@@ -29,6 +29,8 @@ public interface PuppetTypes {
   IElementType PP_CLASS_DEFINITION = new PuppetCompositeElementType("PP_CLASS_DEFINITION");
   IElementType PP_CLASS_NAME = new PuppetCompositeElementType("PP_CLASS_NAME");
   IElementType PP_DEF_BODY = new PuppetCompositeElementType("PP_DEF_BODY");
+  IElementType PP_DEPENDENCY = new PuppetCompositeElementType("PP_DEPENDENCY");
+  IElementType PP_DIGITS = new PuppetCompositeElementType("PP_DIGITS");
   IElementType PP_EXPRESSION = new PuppetCompositeElementType("PP_EXPRESSION");
   IElementType PP_INCLUSION = new PuppetCompositeElementType("PP_INCLUSION");
   IElementType PP_INSTANCE_NAME = new PuppetCompositeElementType("PP_INSTANCE_NAME");
@@ -37,8 +39,11 @@ public interface PuppetTypes {
   IElementType PP_OBJ_NAME = new PuppetCompositeElementType("PP_OBJ_NAME");
   IElementType PP_REFERENCE_OR_TOKEN = new PuppetCompositeElementType("PP_REFERENCE_OR_TOKEN");
   IElementType PP_STRING_LITERAL_EXPRESSION = new PuppetCompositeElementType("PP_STRING_LITERAL_EXPRESSION");
+  IElementType PP_VARIABLE = new PuppetCompositeElementType("PP_VARIABLE");
 
   IElementType PP_CHOICE = new PuppetTokenType("choice");
+  IElementType PP_DIGIT = new PuppetTokenType("digit");
+  IElementType PP_FUNCTION = new PuppetTokenType("function");
   IElementType PP_ID = new PuppetTokenType("id");
   IElementType PP_LEFT_BRACE = new PuppetTokenType("{");
   IElementType PP_OP_COMMA = new PuppetTokenType(",");
@@ -46,6 +51,7 @@ public interface PuppetTypes {
   IElementType PP_RIGHT_BRACE = new PuppetTokenType("}");
   IElementType PP_SEQUENCE = new PuppetTokenType("sequence");
   IElementType PP_STRING = new PuppetTokenType("string");
+  IElementType PP_VIRTUAL = new PuppetTokenType("virtual");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
@@ -71,6 +77,12 @@ public interface PuppetTypes {
       else if (type == PP_DEF_BODY) {
         return new PuppetDefBodyImpl(node);
       }
+      else if (type == PP_DEPENDENCY) {
+        return new PuppetDependencyImpl(node);
+      }
+      else if (type == PP_DIGITS) {
+        return new PuppetDigitsImpl(node);
+      }
       else if (type == PP_EXPRESSION) {
         return new PuppetExpressionImpl(node);
       }
@@ -94,6 +106,9 @@ public interface PuppetTypes {
       }
       else if (type == PP_STRING_LITERAL_EXPRESSION) {
         return new PuppetStringLiteralExpressionImpl(node);
+      }
+      else if (type == PP_VARIABLE) {
+        return new PuppetVariableImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

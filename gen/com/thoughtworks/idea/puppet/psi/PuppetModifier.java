@@ -21,4 +21,7 @@ import com.intellij.psi.PsiElement;
 
 public interface PuppetModifier extends PuppetCompositeElement {
 
+  @Nullable
+  public PsiElement getVirtual();
+
 }
