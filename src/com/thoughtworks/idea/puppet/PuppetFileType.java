@@ -12,7 +12,7 @@ import javax.swing.*;
  */
 public class PuppetFileType extends LanguageFileType {
 
-    public static final Icon FILE_ICON = IconLoader.getIcon("/icons/puppet.png");
+    public static final Icon FILE_ICON = IconLoader.getIcon("/icons/puppet-icon.png");
     public static final LanguageFileType INSTANCE = new PuppetFileType();
     @NonNls public static final String DEFAULT_EXTENSION = "pp";
     @NonNls public static final String DOT_DEFAULT_EXTENSION = "."+DEFAULT_EXTENSION;
